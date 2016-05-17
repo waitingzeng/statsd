@@ -83,9 +83,10 @@ CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
             continue;
 
         if (!this.check_whitelist(key)) {
-            console.log("Key (counter) " + key + " not in whitelist");
             continue;
         }
+        console.log("Key (counter) " + key + " in whitelist");
+            
 
         var names = this.config.processKeyForNamespace ? this.processKey(key) : {};
         var namespace = this.config.namespace || names.namespace || "AwsCloudWatchStatsdBackend";
@@ -110,9 +111,10 @@ CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
         if (timers[key].length > 0) {
 
             if (!this.check_whitelist(key)) {
-                console.log("Key (timer) " + key + " not in whitelist");
                 continue;
             }
+            console.log("Key (timer) " + key + " in whitelist");
+                
 
             var values = timers[key].sort(function(a, b) {
                 return a - b;
@@ -165,9 +167,10 @@ CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
     for (key in gauges) {
 
         if (!this.check_whitelist(key)) {
-            console.log("Key (gauge) " + key + " not in whitelist");
             continue;
         }
+        console.log("Key (gauge) " + key + " in whitelist");
+            
 
         var names = this.config.processKeyForNamespace ? this.processKey(key) : {};
         var namespace = this.config.namespace || names.namespace || "AwsCloudWatchStatsdBackend";
