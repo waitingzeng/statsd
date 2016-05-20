@@ -54,6 +54,20 @@ CloudwatchBackend.prototype.processKey = function(key) {
 };
 
 CloudwatchBackend.prototype.check_whitelist = function(key) {
+    var blacklist =  ['carbon.', 'chef.', 'collectd.', 'eng.', 'prod.', 'stag.', 'stats.', 'stats_counts.', 'statsd.', 'uwsgi.']
+    
+    if(!this.config.blacklist || this.config.blacklist.length == 0){
+        this.config.blacklist = [];
+    }
+    var blacklist = this.config.blacklist;
+
+    for(var i=0; i<blacklist.length;i++){
+        var b = blacklist[i];
+        if(key.indexOf(b) == 0){
+            return false;
+        }
+    }
+
     if (!this.config.whitelist) {
         return true;
     }
@@ -67,7 +81,7 @@ CloudwatchBackend.prototype.check_whitelist = function(key) {
         }
     }
     return false;
-}
+};
 
 CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
 
