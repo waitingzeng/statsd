@@ -54,20 +54,25 @@ CloudwatchBackend.prototype.processKey = function(key) {
 };
 
 CloudwatchBackend.prototype.check_whitelist = function(key) {
-    var blacklist =  ['carbon.', 'chef.', 'collectd.', 'eng.', 'prod.', 'stag.', 'stats.', 'stats_counts.', 'statsd.', 'uwsgi.']
+    var blacklist =  ['production.', 'engineering.', 'staging.', 'eng.', 'prod.', 'stag.']
     
-    if(!this.config.blacklist || this.config.blacklist.length == 0){
-        this.config.blacklist = [];
-    }
-    var blacklist = this.config.blacklist;
+    //if(!this.config.blacklist || this.config.blacklist.length == 0){
+    //    this.config.blacklist = [];
+    //}
+    //var blacklist = this.config.blacklist;
 
     for(var i=0; i<blacklist.length;i++){
         var b = blacklist[i];
-        if(key.indexOf(b) == 0){
+        if(key.indexOf(b) >= 0){
             return false;
         }
     }
 
+    if(key.indexOf('i-') >= 0){
+        return false;
+    }
+
+    return true;
     if (!this.config.whitelist) {
         return true;
     }
