@@ -54,7 +54,7 @@ CloudwatchBackend.prototype.processKey = function(key) {
 };
 
 CloudwatchBackend.prototype.check_whitelist = function(key) {
-    var blacklist =  ['production.', 'engineering.', 'staging.', 'eng.', 'prod.', 'stag.']
+    var blacklist =  ['production.', 'engineering.', 'staging.', 'eng.', 'prod.', 'stag.', 'dynamodb.', 'statsd.', 'sqs.']
     
     //if(!this.config.blacklist || this.config.blacklist.length == 0){
     //    this.config.blacklist = [];
