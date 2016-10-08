@@ -68,7 +68,7 @@ CloudwatchBackend.prototype.check_whitelist = function(key) {
         }
     }
 
-    if(key.indexOf('i-') >= 0){
+    if(key.indexOf('.i-') >= 0){
         return false;
     }
 
@@ -88,12 +88,44 @@ CloudwatchBackend.prototype.check_whitelist = function(key) {
     return false;
 };
 
+String.prototype.rsplit = function(sep, maxsplit) {
+    var split = this.split(sep);
+    return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+};
+
+CloudwatchBackend.prototype.rebuild_gauges = function(gauges){
+    var new_gauges = {};
+    for(var key in gauges){
+        var res = key.rsplit('.', 1);
+        var new_key = res[0];
+        var unique_key = res[1];
+        if(unique_key.indexOf('sum-') == -1){
+            new_gauges[key] = {key : gauges[key]};
+            continue;
+        }
+
+        if(!new_gauges[new_key]){
+            new_gauges[new_key] = {};
+        }
+        new_gauges[new_key][unique_key] = gauges[key];
+    }
+    var new_gauges_2 = {};
+    for(var key1 in new_gauges){
+        var total = 0;
+        for(var key2 in new_gauges[key1]){
+            total += new_gauges[key1][key2];
+        }
+        new_gauges_2[key1] = total;
+    }
+    return new_gauges_2;
+};
+
 CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
 
     console.log('Flushing metrics at ' + new Date(timestamp * 1000).toISOString());
 
     var counters = metrics.counters;
-    var gauges = metrics.gauges;
+    var gauges = this.rebuild_gauges(metrics.gauges);
     var timers = metrics.timers;
     var sets = metrics.sets;
 
@@ -128,6 +160,9 @@ CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
 
     for (key in timers) {
         if (timers[key].length > 0) {
+
+            if (key.indexOf('statsd.') == 0)
+                continue;
 
             if (!this.check_whitelist(key)) {
                 continue;
