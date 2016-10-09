@@ -108,6 +108,7 @@ CloudwatchBackend.prototype.rebuild_gauges = function(gauges){
             new_gauges[new_key] = {};
         }
         new_gauges[new_key][unique_key] = gauges[key];
+        delete(gauges[key]);
     }
     var new_gauges_2 = {};
     for(var key1 in new_gauges){
