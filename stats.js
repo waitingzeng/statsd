@@ -141,10 +141,11 @@ function flushMetrics() {
 
     // Normally gauges are not reset.  so if we don't delete them, continue to persist previous value
     conf.deleteGauges = conf.deleteGauges || false;
-    conf.deleteGaugesTimeout = conf.deleteGaugesTimeout || 300;
+    conf.deleteGaugesTimeout = 120;
     if (conf.deleteGauges) {
       if(gauges[timestamp_lag_namespace] !== undefined && gauges[timestamp_lag_namespace] > conf.deleteGaugesTimeout)
       for (var gauge_key in metrics.gauges) {
+        l.log("Delete gauge_key " + gauge_key);
         delete(metrics.gauges[gauge_key]);
       }
     }
