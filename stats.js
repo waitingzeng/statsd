@@ -154,10 +154,9 @@ function flushMetrics() {
     backendEvents.emit('flush', time_stamp, metrics);
   });
 
-  for (var gauge_key in metrics.gauges) {
-      delete(metrics.gauges[gauge_key]);
+  for (var gauge_key in metrics_hash.gauges) {
+      delete(metrics_hash.gauges[gauge_key]);
   }
-
 
   // Performing this setTimeout at the end of this method rather than the beginning
   // helps ensure we adapt to negative clock skew by letting the method's latency
