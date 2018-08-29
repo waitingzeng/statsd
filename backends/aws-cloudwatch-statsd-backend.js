@@ -54,7 +54,7 @@ CloudwatchBackend.prototype.processKey = function(key) {
 };
 
 CloudwatchBackend.prototype.check_whitelist = function(key) {
-    var blacklist =  ['production.', 'engineering.', 'staging.', 'eng.', 'prod.', 'stag.', 'dynamodb.', 'statsd.', 'sqs.', 'jobservers.', 'logcenter_kafka.', 'email_service_kafka.', 'email_service.', 'email_service_client.', 'email_service_page_queue.', 'redis.email_service_catch_all.', 'redis.email_service_catchall.', 'page_queue.']
+    var blacklist =  ['production.', 'engineering.', 'staging.', 'eng.', 'prod.', 'stag.', 'dynamodb.', 'statsd.', 'sqs.', 'jobservers.', 'logcenter_kafka.', 'email_service_kafka.', 'email_service.', 'email_service_client.', 'email_service_page_queue.', 'redis.email_service_catch_all.', 'redis.email_service_catchall.', 'page_queue.', 'redis.email_service_folder.']
     
     //if(!this.config.blacklist || this.config.blacklist.length == 0){
     //    this.config.blacklist = [];
