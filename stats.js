@@ -68,6 +68,39 @@ function startServer(config, name, callback) {
 // global for conf
 var conf;
 
+String.prototype.rsplit = function(sep, maxsplit) {
+    var split = this.split(sep);
+    return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
+};
+
+function rebuild_gauges(gauges){
+    var new_gauges = {};
+    for(var key in gauges){
+        var res = key.rsplit('.', 1);
+        var new_key = res[0];
+        var unique_key = res[1];
+        if(unique_key.indexOf('sum-') == -1){
+            new_gauges[key] = {key : gauges[key]};
+            continue;
+        }
+
+        if(!new_gauges[new_key]){
+            new_gauges[new_key] = {};
+        }
+        new_gauges[new_key][unique_key] = gauges[key];
+    }
+    var new_gauges_2 = {};
+    for(var key1 in new_gauges){
+        var total = 0;
+        for(var key2 in new_gauges[key1]){
+            total += new_gauges[key1][key2];
+        }
+        new_gauges_2[key1] = total;
+    }
+    return new_gauges_2;
+};
+
+
 // Flush metrics to each backend.
 function flushMetrics() {
   var time_stamp = Math.round(new Date().getTime() / 1000);
@@ -149,6 +182,8 @@ function flushMetrics() {
       }
     }
   });
+
+  metrics_hash.gauges = rebuild_gauges(metrics_hash.gauges);
 
   pm.process_metrics(metrics_hash, flushInterval, time_stamp, function emitFlush(metrics) {
     backendEvents.emit('flush', time_stamp, metrics);
